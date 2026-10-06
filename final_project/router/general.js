@@ -24,41 +24,47 @@ public_users.post("/register", (req, res) => {
 
 // Task 1 & Task 10: Get the book list available in the shop using async/await and Promises
 public_users.get('/', async function (req, res) {
-  try {
-    const fetchBooks = () => {
-      return new Promise((resolve) => {
+  const fetchBooks = () => {
+    return new Promise((resolve, reject) => {
+      if (books) {
         resolve(books);
-      });
-    };
+      } else {
+        reject({ status: 500, message: "Failed to retrieve books" });
+      }
+    });
+  };
+
+  try {
     const bookList = await fetchBooks();
-    return res.status(200).send(JSON.stringify(bookList, null, 4));
+    return res.status(200).json(bookList);
   } catch (error) {
-    return res.status(500).json({ message: "Failed to retrieve books", error: error.message });
+    return res.status(error.status || 500).json({ message: error.message });
   }
 });
 
-// Task 2 & Task 11: Get book details based on ISBN using Promises
-public_users.get('/isbn/:isbn', function (req, res) {
+// Task 2 & Task 11: Get book details based on ISBN using async/await and Promises
+public_users.get('/isbn/:isbn', async function (req, res) {
   const isbn = req.params.isbn;
 
-  const fetchBookByISBN = new Promise((resolve, reject) => {
-    if (books[isbn]) {
-      resolve(books[isbn]);
-    } else {
-      reject({ status: 404, message: "Book not found" });
-    }
-  });
-
-  fetchBookByISBN
-    .then((book) => {
-      return res.status(200).json(book);
-    })
-    .catch((err) => {
-      return res.status(err.status || 500).json({ message: err.message });
+  const fetchBookByISBN = () => {
+    return new Promise((resolve, reject) => {
+      if (books[isbn]) {
+        resolve(books[isbn]);
+      } else {
+        reject({ status: 404, message: "Book not found" });
+      }
     });
+  };
+
+  try {
+    const book = await fetchBookByISBN();
+    return res.status(200).json(book);
+  } catch (error) {
+    return res.status(error.status || 500).json({ message: error.message });
+  }
 });
 
-// Task 3 & Task 12: Get book details based on author using Promises / async-await
+// Task 3 & Task 12: Get book details based on author using async/await and Promises
 public_users.get('/author/:author', async function (req, res) {
   const authorParam = req.params.author.toLowerCase();
 
@@ -87,32 +93,33 @@ public_users.get('/author/:author', async function (req, res) {
   }
 });
 
-// Task 4 & Task 13: Get all books based on title using Promises
-public_users.get('/title/:title', function (req, res) {
+// Task 4 & Task 13: Get all books based on title using async/await and Promises
+public_users.get('/title/:title', async function (req, res) {
   const titleParam = req.params.title.toLowerCase();
 
-  const fetchBooksByTitle = new Promise((resolve, reject) => {
-    let filteredBooks = {};
-    const keys = Object.keys(books);
-    keys.forEach((key) => {
-      if (books[key].title.toLowerCase() === titleParam) {
-        filteredBooks[key] = books[key];
+  const fetchBooksByTitle = () => {
+    return new Promise((resolve, reject) => {
+      let filteredBooks = {};
+      const keys = Object.keys(books);
+      keys.forEach((key) => {
+        if (books[key].title.toLowerCase() === titleParam) {
+          filteredBooks[key] = books[key];
+        }
+      });
+      if (Object.keys(filteredBooks).length > 0) {
+        resolve(filteredBooks);
+      } else {
+        reject({ status: 404, message: "No books found with the given title" });
       }
     });
-    if (Object.keys(filteredBooks).length > 0) {
-      resolve(filteredBooks);
-    } else {
-      reject({ status: 404, message: "No books found with the given title" });
-    }
-  });
+  };
 
-  fetchBooksByTitle
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((error) => {
-      return res.status(error.status || 500).json({ message: error.message });
-    });
+  try {
+    const result = await fetchBooksByTitle();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(error.status || 500).json({ message: error.message });
+  }
 });
 
 // Task 5: Get book review based on ISBN
