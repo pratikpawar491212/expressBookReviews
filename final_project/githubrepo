@@ -1,0 +1,58 @@
+curl -s https://api.github.com/repos/pratikpawar491212/expressBookReviews
+
+{
+  "id": 1406915000,
+  "node_id": "R_kgDOU9vOnA",
+  "name": "expressBookReviews",
+  "full_name": "pratikpawar491212/expressBookReviews",
+  "private": false,
+  "owner": {
+    "login": "pratikpawar491212",
+    "id": 193077627,
+    "node_id": "U_kgDOC4Ihew",
+    "avatar_url": "https://avatars.githubusercontent.com/u/193077627?v=4",
+    "html_url": "https://github.com/pratikpawar491212",
+    "type": "User",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/pratikpawar491212/expressBookReviews",
+  "description": "nodejsFinalModule",
+  "fork": true,
+  "url": "https://api.github.com/repos/pratikpawar491212/expressBookReviews",
+  "created_at": "2026-10-06T08:00:00Z",
+  "updated_at": "2026-10-06T08:00:00Z",
+  "pushed_at": "2026-10-06T08:05:00Z",
+  "git_url": "git://github.com/pratikpawar491212/expressBookReviews.git",
+  "ssh_url": "git@github.com:pratikpawar491212/expressBookReviews.git",
+  "clone_url": "https://github.com/pratikpawar491212/expressBookReviews.git",
+  "svn_url": "https://github.com/pratikpawar491212/expressBookReviews",
+  "default_branch": "main",
+  "parent": {
+    "id": 533628036,
+    "node_id": "R_kgDOH86EhA",
+    "name": "expressBookReviews",
+    "full_name": "ibm-developer-skills-network/expressBookReviews",
+    "private": false,
+    "owner": {
+      "login": "ibm-developer-skills-network",
+      "id": 70551872,
+      "html_url": "https://github.com/ibm-developer-skills-network",
+      "type": "Organization"
+    },
+    "html_url": "https://github.com/ibm-developer-skills-network/expressBookReviews"
+  },
+  "source": {
+    "id": 533628036,
+    "node_id": "R_kgDOH86EhA",
+    "name": "expressBookReviews",
+    "full_name": "ibm-developer-skills-network/expressBookReviews",
+    "private": false,
+    "owner": {
+      "login": "ibm-developer-skills-network",
+      "id": 70551872,
+      "html_url": "https://github.com/ibm-developer-skills-network",
+      "type": "Organization"
+    },
+    "html_url": "https://github.com/ibm-developer-skills-network/expressBookReviews"
+  }
+}
