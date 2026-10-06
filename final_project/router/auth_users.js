@@ -39,7 +39,7 @@ regd_users.post("/login", (req, res) => {
       accessToken,
       username
     };
-    return res.status(200).send("Customer successfully logged in");
+    return res.status(200).send("User successfully logged in");
   } else {
     return res.status(208).json({ message: "Invalid Login. Check username and password" });
   }
@@ -64,9 +64,10 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   }
 
   books[isbn].reviews[username] = review;
-  return res.status(200).send(
-    `The review for the book with ISBN ${isbn} has been added/updated. Current reviews: ${JSON.stringify(books[isbn].reviews)}`
-  );
+  return res.status(200).json({
+    message: `The review for the book with ISBN ${isbn} has been added/updated.`,
+    reviews: books[isbn].reviews
+  });
 });
 
 // Delete a book review
