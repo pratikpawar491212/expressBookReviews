@@ -22,103 +22,58 @@ public_users.post("/register", (req, res) => {
   return res.status(200).json({ message: "Customer successfully registered. Now you can login" });
 });
 
-// Task 1 & Task 10: Get the book list available in the shop using async/await and Promises
+// Task 1: Get the book list available in the shop
 public_users.get('/', async function (req, res) {
-  const fetchBooks = () => {
-    return new Promise((resolve, reject) => {
-      if (books) {
-        resolve(books);
-      } else {
-        reject({ status: 500, message: "Failed to retrieve books" });
-      }
-    });
-  };
-
   try {
-    const bookList = await fetchBooks();
-    return res.status(200).json(bookList);
+    return res.status(200).json(books);
   } catch (error) {
-    return res.status(error.status || 500).json({ message: error.message });
+    return res.status(500).json({ message: "Failed to retrieve books", error: error.message });
   }
 });
 
-// Task 2 & Task 11: Get book details based on ISBN using async/await and Promises
+// Task 2: Get book details based on ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
   const isbn = req.params.isbn;
-
-  const fetchBookByISBN = () => {
-    return new Promise((resolve, reject) => {
-      if (books[isbn]) {
-        resolve(books[isbn]);
-      } else {
-        reject({ status: 404, message: "Book not found" });
-      }
-    });
-  };
-
-  try {
-    const book = await fetchBookByISBN();
-    return res.status(200).json(book);
-  } catch (error) {
-    return res.status(error.status || 500).json({ message: error.message });
+  if (books[isbn]) {
+    return res.status(200).json(books[isbn]);
+  } else {
+    return res.status(404).json({ message: "Book not found" });
   }
 });
 
-// Task 3 & Task 12: Get book details based on author using async/await and Promises
+// Task 3: Get book details based on author
 public_users.get('/author/:author', async function (req, res) {
   const authorParam = req.params.author.toLowerCase();
+  let filteredBooks = {};
+  const keys = Object.keys(books);
+  keys.forEach((key) => {
+    if (books[key].author.toLowerCase() === authorParam) {
+      filteredBooks[key] = books[key];
+    }
+  });
 
-  const fetchBooksByAuthor = () => {
-    return new Promise((resolve, reject) => {
-      let filteredBooks = {};
-      const keys = Object.keys(books);
-      keys.forEach((key) => {
-        if (books[key].author.toLowerCase() === authorParam) {
-          filteredBooks[key] = books[key];
-        }
-      });
-      if (Object.keys(filteredBooks).length > 0) {
-        resolve(filteredBooks);
-      } else {
-        reject({ status: 404, message: "No books found for the given author" });
-      }
-    });
-  };
-
-  try {
-    const result = await fetchBooksByAuthor();
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(error.status || 500).json({ message: error.message });
+  if (Object.keys(filteredBooks).length > 0) {
+    return res.status(200).json(filteredBooks);
+  } else {
+    return res.status(404).json({ message: "No books found for the given author" });
   }
 });
 
-// Task 4 & Task 13: Get all books based on title using async/await and Promises
+// Task 4: Get all books based on title
 public_users.get('/title/:title', async function (req, res) {
   const titleParam = req.params.title.toLowerCase();
+  let filteredBooks = {};
+  const keys = Object.keys(books);
+  keys.forEach((key) => {
+    if (books[key].title.toLowerCase() === titleParam) {
+      filteredBooks[key] = books[key];
+    }
+  });
 
-  const fetchBooksByTitle = () => {
-    return new Promise((resolve, reject) => {
-      let filteredBooks = {};
-      const keys = Object.keys(books);
-      keys.forEach((key) => {
-        if (books[key].title.toLowerCase() === titleParam) {
-          filteredBooks[key] = books[key];
-        }
-      });
-      if (Object.keys(filteredBooks).length > 0) {
-        resolve(filteredBooks);
-      } else {
-        reject({ status: 404, message: "No books found with the given title" });
-      }
-    });
-  };
-
-  try {
-    const result = await fetchBooksByTitle();
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(error.status || 500).json({ message: error.message });
+  if (Object.keys(filteredBooks).length > 0) {
+    return res.status(200).json(filteredBooks);
+  } else {
+    return res.status(404).json({ message: "No books found with the given title" });
   }
 });
 
@@ -132,4 +87,52 @@ public_users.get('/review/:isbn', function (req, res) {
   }
 });
 
+// ============================================================================
+// Tasks 10 to 13: Asynchronous methods using Promise callbacks / async-await with Axios
+// ============================================================================
+
+// Task 10: Get all books using async/await with Axios
+async function getBookList() {
+  try {
+    const response = await axios.get("http://localhost:5000/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching book list:", error);
+    throw error;
+  }
+}
+
+// Task 11: Get book details based on ISBN using Promises with Axios
+function getFromISBN(isbn) {
+  return new Promise((resolve, reject) => {
+    axios.get("http://localhost:5000/isbn/" + isbn)
+      .then(response => resolve(response.data))
+      .catch(error => reject(error));
+  });
+}
+
+// Task 12: Get book details based on author using async/await with Axios
+async function getFromAuthor(author) {
+  try {
+    const response = await axios.get("http://localhost:5000/author/" + encodeURIComponent(author));
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching books by author:", error);
+    throw error;
+  }
+}
+
+// Task 13: Get all books based on title using Promises with Axios
+function getFromTitle(title) {
+  return new Promise((resolve, reject) => {
+    axios.get("http://localhost:5000/title/" + encodeURIComponent(title))
+      .then(response => resolve(response.data))
+      .catch(error => reject(error));
+  });
+}
+
 module.exports.general = public_users;
+module.exports.getBookList = getBookList;
+module.exports.getFromISBN = getFromISBN;
+module.exports.getFromAuthor = getFromAuthor;
+module.exports.getFromTitle = getFromTitle;
